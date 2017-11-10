@@ -28,6 +28,7 @@ name = data.getJSON().data.procuringEntity.name;
 dateModified = item.dateModified;
 					
 	
+//complete	start	
 if(data.getJSON().data.status=="complete")	{
 	
 	var q;
@@ -46,16 +47,7 @@ if(data.getJSON().data.status=="complete")	{
 		
 	};
 				
-}
-else {
-		description = data.getJSON().data.items[0].description.toLowerCase();
-		cpv = data.getJSON().data.items[0].classification.id;
-		mail = "";
-		edr = "";
-		winner = "";
-		region = "";
-		amount = 0;
-};
+
 
 					
 db.serialize(function() {
@@ -65,7 +57,7 @@ statement.run(dateModified.replace(/T.*/, ""),tenderID,status,name,description,c
 statement.finalize();
 });
 					//.replace(/\s.*/, "")
-					
+}//complete	end				
 			
 					})
 					.catch(function  (error) {
