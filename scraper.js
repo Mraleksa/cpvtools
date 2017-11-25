@@ -1,74 +1,118 @@
 var client = require('http-api-client');
-const fs = require('fs');
+//var d3 = require("d3");
 var sqlite3 = require("sqlite3").verbose();
-
-// Open a database handle
 var db = new sqlite3.Database("data.sqlite");
 
-var currentCount =  "2017-01-01T16:02:44.083417+03:00"
-var p=0; var p2=0;var description,status,cpv,name,winner,region,mail,edr,tenderID,amount;
- 
+
+//var formatTime = d3.timeFormat("%Y-%m-%d");
+
+
+//db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
+//var start =  "2017-01-01T10:18:57.452368+03:00"
+var start =  "2017-03-01T16:02:44.083417+03:00"
+//var end  = formatTime(new Date());
+//var end  = "2017-01-03"
+var p=0; var p2=0;
 function piv(){  
 p++;
-client.request({url: 'https://public.api.openprocurement.org/api/2.3/tenders?offset='+currentCount})
+client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?offset='+start})
+      .then(function (data) {
+		var dataset = data.getJSON().data;
+		start = data.getJSON().next_page.offset;			
+		console.log(start)
+		return dataset;
+	})	
+	.then(function (dataset) {			
+		dataset.forEach(function(item) {
+		client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts/'+item.id})
+		.then(function (data) {	
+
+
+if(data.getJSON().data.status=="active")	
+{	
+	var changeLength = data.getJSON().data.changes.length;	
+ 	var dateModified = item.dateModified
+ 	var contractID = data.getJSON().data.contractID
+	var tender_id = data.getJSON().data.tender_id;
+	var lotIdContracts = data.getJSON().data.items[0].relatedLot;
+	var dateSigned = data.getJSON().data.dateSigned;
+	var amount = data.getJSON().data.value.amount;	
+	var name = data.getJSON().data.procuringEntity.name;	
+	var edr = data.getJSON().data.suppliers[0].identifier.id;	
+	var suppliers =  data.getJSON().data.suppliers[0].name;	
+	var region =  data.getJSON().data.suppliers[0].address.region;	
+	var description = data.getJSON().data.items[0].description;	
+	var cpv = data.getJSON().data.items[0].classification.id;	
+	
+	
+	
+	//////////tenders//////////////
+		client.request({url: 'https://public.api.openprocurement.org/api/2.3/tenders/'+tender_id})
 		.then(function (data) {
-			var dataset = data.getJSON().data;			
-			currentCount = data.getJSON().next_page.offset;			
-			console.log(currentCount)			
-			return dataset;
-		})	
-		.then(function (dataset) {			
-			dataset.forEach(function(item) {
-				client.request({url: 'https://public.api.openprocurement.org/api/2.3/tenders/'+item.id})
-					.then(function (data) {
-
-status = data.getJSON().data.status;
-tenderID = data.getJSON().data.tenderID;
-name = data.getJSON().data.procuringEntity.name;
-dateModified = item.dateModified;
+		var startAmount;var lots;
+		if(data.getJSON().data.lots==undefined){
+			startAmount = data.getJSON().data.value.amount;
+			lots=1;
+		}
+		else {
+			lots = data.getJSON().data.lots.length
+		for (var i = 1; i <= data.getJSON().data.lots.length; i++) {
+				if(lotIdContracts==data.getJSON().data.lots[data.getJSON().data.lots.length-(i)].id){
+				startAmount =  data.getJSON().data.lots[data.getJSON().data.lots.length-(i)].value.amount
+				};			
+			}
+		}
+		var save=Math.round((startAmount-amount)/startAmount*100);
+		
+		var numberOfBids;
+		if(isNaN(data.getJSON().data.numberOfBids)){numberOfBids = 1}
+		else {numberOfBids=data.getJSON().data.numberOfBids};
+		
+		var bids;
+		if(data.getJSON().data.bids==undefined){bids = 1;}
+		else {bids = data.getJSON().data.bids.length}
 					
+		var awards = data.getJSON().data.awards.length
+		console.log(status)		
+		
+	//////////tenders AND db//////////////	
 	
-//complete	start	
-if(data.getJSON().data.status=="complete")	{
-	
-	var q;
-	for (q = 0; q < data.getJSON().data.contracts.length; q++) {
-		
-		description = data.getJSON().data.contracts[q].items[0].description.toLowerCase();
-		cpv = data.getJSON().data.contracts[q].items[0].classification.id;
-		mail = data.getJSON().data.contracts[q].suppliers[0].contactPoint.email;
-		edr = data.getJSON().data.contracts[q].suppliers[0].identifier.id;
-		winner = data.getJSON().data.contracts[q].suppliers[0].name;
-		region = data.getJSON().data.contracts[q].suppliers[0].address.region;
-		amount = data.getJSON().data.contracts[q].value.amount;
-		
-		//console.log(cpv)
-		
-		
-	};
-				
-
-
-					
 db.serialize(function() {
-db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,tenderID TEXT,status TEXT,name TEXT,description TEXT,cpv TEXT,mail TEXT,edr TEXT,winner TEXT,region TEXT,amount INT)");
-var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-statement.run(dateModified.replace(/T.*/, ""),tenderID,status,name,description,cpv,mail,edr,winner,region,amount);
+db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT)");
+var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+statement.run(dateModified.replace(/T.*/, ""),contractID,name,suppliers,edr,region,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength);
 statement.finalize();
 });
-					//.replace(/\s.*/, "")
-}//complete	end				
-			
-					})
-					.catch(function  (error) {
-						console.log("error_detale")
-						
-					});  
-				});
-		
+	
+	
+	//////////tenders AND db//////////////	
 		})
-		.then(function () {	
-		if (p<3){piv ();}		
+	
+
+				
+				
+				
+				
+				
+	
+	
+}//active			
+	})
+	.catch(function  (error) {
+		//console.log("error_detale2")				
+	});  
+	});	
+	
+	
+	
+	
+	
+	})
+	.catch(function  (error) {
+		//console.log("error_detale3")				
+	})
+	.then(function () {	
+	if (p<5){piv ();}		
 		else {
 			console.log("stop")
 				p=0;
@@ -80,15 +124,19 @@ statement.finalize();
 					piv ();
 				}
 				else {console.log("STOP")}
-				}, 5000);
+				}, 10000);
 		}		
-							
+					
+		
 		})
-		.catch( function (error) {
+	.catch( function (error) {
 		console.log("error")
 		piv ();
-		});   
-		
+	});   					
 }
 
-piv ();	 
+
+
+piv ();	
+
+//})
