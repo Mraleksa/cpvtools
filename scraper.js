@@ -111,9 +111,9 @@ statement.finalize();
 		//console.log("error_detale3")				
 	})
 	.then(function () {	
-	if (p<3){piv ();}		
+	if (p<2){piv ();}		
 		else {
-			console.log("stop")
+			//console.log("stop")
 				p=0;
 				p2++;
 				console.log(p2)
@@ -123,7 +123,7 @@ statement.finalize();
 					piv ();
 				}
 				else {console.log("STOP")}
-				}, 10000);
+				}, 3000);
 		}		
 					
 		
