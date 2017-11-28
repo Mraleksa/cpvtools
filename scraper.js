@@ -111,19 +111,10 @@ statement.finalize();
 		//console.log("error_detale3")				
 	})
 	.then(function () {	
-	if (p<4){piv ();}		
+	if (p<100){setTimeout(function() {piv ();},3000);}		
 		else {
-			//console.log("stop")
-				p=0;
-				p2++;
-				console.log(p2)
-			setTimeout(function() {
+			console.log("stop")
 			
-				if (p2 <500) {
-					piv ();
-				}
-				else {console.log("STOP")}
-				}, 5000);
 		}		
 					
 		
