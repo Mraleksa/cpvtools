@@ -32,9 +32,9 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 
 		
 		
-if(data.getJSON().data.status=="active")	
-{	
-	//var status = data.getJSON().data.status
+//if(data.getJSON().data.status=="active")	
+//{	
+	var status = data.getJSON().data.status
 	
 	if(data.getJSON().data.changes==undefined){var changeLength = 0;}
 	else{var changeLength = data.getJSON().data.changes.length;}
@@ -88,9 +88,9 @@ if(data.getJSON().data.status=="active")
 	//////////tenders AND db//////////////	
 	
 db.serialize(function() {
-db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT)");
-var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-statement.run(dateModified.replace(/T.*/, ""),contractID,name,suppliers,edr,region,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength);
+db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,status TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT)");
+var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+statement.run(dateModified.replace(/T.*/, ""),status,contractID,name,suppliers,edr,region,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength);
 statement.finalize();
 });
 	
@@ -101,7 +101,7 @@ statement.finalize();
 
 	
 
-}//active			
+//}//active			
 	})
 	.catch(function  (error) {
 		//console.log("error_detale2")				
@@ -112,7 +112,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<2){setTimeout(function() {piv ();},4000);}		
+	if (p<3){setTimeout(function() {piv ();},4000);}		
 		else {
 			console.log("stop")
 			
