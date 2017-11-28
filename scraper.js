@@ -112,7 +112,7 @@ statement.finalize();
 		//console.log("error_detale3")				
 	})
 	.then(function () {	
-	if (p<100){setTimeout(function() {piv ();},2000);}		
+	if (p<10){setTimeout(function() {piv ();},3000);}		
 		else {
 			console.log("stop")
 			
