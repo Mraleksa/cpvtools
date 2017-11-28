@@ -32,8 +32,8 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 
 		
 		
-//if(data.getJSON().data.status=="active")	
-//{	
+if(data.getJSON().data.status=="active")	
+{	
 	var status = data.getJSON().data.status
 	
 	if(data.getJSON().data.changes==undefined){var changeLength = 0;}
@@ -101,7 +101,7 @@ statement.finalize();
 
 	
 
-//}//active			
+}//active			
 	})
 	.catch(function  (error) {
 		//console.log("error_detale2")				
