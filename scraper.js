@@ -32,8 +32,8 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 
 		
 		
-if(data.getJSON().data.status=="active")	
-{	
+//if(data.getJSON().data.status=="active")	
+//{	
 	//var status = data.getJSON().data.status
 	
 	if(data.getJSON().data.changes==undefined){var changeLength = 0;}
@@ -94,13 +94,14 @@ statement.run(dateModified.replace(/T.*/, ""),contractID,name,suppliers,edr,regi
 statement.finalize();
 });
 	
+	
 	//////////tenders AND db//////////////	
 		})
 
 
 	
 
-}//active			
+//}//active			
 	})
 	.catch(function  (error) {
 		//console.log("error_detale2")				
@@ -111,7 +112,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<10){setTimeout(function() {piv ();},4000);}		
+	if (p<2){setTimeout(function() {piv ();},4000);}		
 		else {
 			console.log("stop")
 			
