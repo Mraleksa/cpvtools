@@ -19,7 +19,7 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
       .then(function (data) {
 		var dataset = data.getJSON().data;
 		start = data.getJSON().next_page.offset;			
-		//console.log(start)
+		console.log(start)
 		return dataset;
 	})	
 	.then(function (dataset) {	
