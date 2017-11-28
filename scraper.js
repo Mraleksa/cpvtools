@@ -77,6 +77,12 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		
 	//////////tenders AND db//////////////	
 	
+
+	
+	
+	//////////tenders AND db//////////////	
+		})
+
 db.serialize(function() {
 db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,status TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT)");
 var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -84,28 +90,14 @@ statement.run(dateModified.replace(/T.*/, ""),status,contractID,name,suppliers,e
 statement.finalize();
 });
 	
-	
-	//////////tenders AND db//////////////	
-		})
-	
 
-				
-				
-				
-				
-				
-	
-	
 //}//active			
 	})
 	.catch(function  (error) {
 		//console.log("error_detale2")				
 	});  
-	});	
-	
-	
-	
-	
+	});//dataset
+
 	
 	})
 	.catch(function  (error) {
