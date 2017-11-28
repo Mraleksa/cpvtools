@@ -112,7 +112,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<1500){setTimeout(function() {piv ();},3000);}		
+	if (p<1000){setTimeout(function() {piv ();},3000);}		
 		else {
 			console.log("stop")
 			
