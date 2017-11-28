@@ -9,7 +9,7 @@ var db = new sqlite3.Database("data.sqlite");
 
 //db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
 //var start =  "2017-01-01T10:18:57.452368+03:00"
-var start =  "2017-04-06T15:35:55.696281+03:00"
+var start =  "2017-02-01T15:35:55.696281+03:00"
 //var end  = formatTime(new Date());
 //var end  = "2017-01-03"
 var p=0; var p2=0;
@@ -28,8 +28,9 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		.then(function (data) {	
 
 
-if(data.getJSON().data.status=="active")	
-{	
+//if(data.getJSON().data.status=="active")	
+//{	
+	var status = data.getJSON().data.status
 	var changeLength = data.getJSON().data.changes.length;	
  	var dateModified = item.dateModified
  	var contractID = data.getJSON().data.contractID
@@ -95,7 +96,7 @@ statement.finalize();
 				
 	
 	
-}//active			
+//}//active			
 	})
 	.catch(function  (error) {
 		//console.log("error_detale2")				
@@ -111,7 +112,7 @@ statement.finalize();
 		//console.log("error_detale3")				
 	})
 	.then(function () {	
-	if (p<100){setTimeout(function() {piv ();},3000);}		
+	if (p<100){setTimeout(function() {piv ();},2000);}		
 		else {
 			console.log("stop")
 			
