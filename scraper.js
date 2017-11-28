@@ -9,7 +9,7 @@ var db = new sqlite3.Database("data.sqlite");
 
 //db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
 //var start =  "2017-01-01T10:18:57.452368+03:00"
-var start =  "2017-02-01T15:35:55.696281+03:00"
+var start =  "2017-02-01T15:45:36.915861+02:00"
 //var end  = formatTime(new Date());
 //var end  = "2017-01-03"
 var p=0; var p2=0;
@@ -19,19 +19,26 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
       .then(function (data) {
 		var dataset = data.getJSON().data;
 		start = data.getJSON().next_page.offset;			
-		console.log(start)
+		//console.log(start)
 		return dataset;
 	})	
-	.then(function (dataset) {			
+	.then(function (dataset) {	
+	
+		
+	
 		dataset.forEach(function(item) {
 		client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts/'+item.id})
 		.then(function (data) {	
 
+		
+		
+if(data.getJSON().data.status=="active")	
+{	
+	//var status = data.getJSON().data.status
+	
+	if(data.getJSON().data.changes==undefined){var changeLength = 0;}
+	else{var changeLength = data.getJSON().data.changes.length;}
 
-//if(data.getJSON().data.status=="active")	
-//{	
-	var status = data.getJSON().data.status
-	var changeLength = data.getJSON().data.changes.length;	
  	var dateModified = item.dateModified
  	var contractID = data.getJSON().data.contractID
 	var tender_id = data.getJSON().data.tender_id;
@@ -44,6 +51,9 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 	var region =  data.getJSON().data.suppliers[0].address.region;	
 	var description = data.getJSON().data.items[0].description;	
 	var cpv = data.getJSON().data.items[0].classification.id;	
+	
+		
+	
 	
 	
 	
@@ -77,21 +87,20 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		
 	//////////tenders AND db//////////////	
 	
-
-	
+db.serialize(function() {
+db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT)");
+var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+statement.run(dateModified.replace(/T.*/, ""),contractID,name,suppliers,edr,region,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength);
+statement.finalize();
+});
 	
 	//////////tenders AND db//////////////	
 		})
 
-db.serialize(function() {
-db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,status TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT)");
-var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-statement.run(dateModified.replace(/T.*/, ""),status,contractID,name,suppliers,edr,region,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength);
-statement.finalize();
-});
+
 	
 
-//}//active			
+}//active			
 	})
 	.catch(function  (error) {
 		//console.log("error_detale2")				
@@ -100,11 +109,9 @@ statement.finalize();
 
 	
 	})
-	.catch(function  (error) {
-		//console.log("error_detale3")				
-	})
 	.then(function () {	
-	if (p<10){setTimeout(function() {piv ();},5000);}		
+	
+	if (p<5){setTimeout(function() {piv ();},4000);}		
 		else {
 			console.log("stop")
 			
