@@ -49,7 +49,7 @@ if(data.getJSON().data.status=="active")
 	var edr = data.getJSON().data.suppliers[0].identifier.id;	
 	var suppliers =  data.getJSON().data.suppliers[0].name;	
 	var region =  data.getJSON().data.suppliers[0].address.region;	
-	var description = data.getJSON().data.items[0].description;	
+	var description = data.getJSON().data.items[0].description.toLowerCase();	
 	var cpv = data.getJSON().data.items[0].classification.id;	
 	
 		
