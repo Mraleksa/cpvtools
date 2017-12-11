@@ -9,7 +9,7 @@ var db = new sqlite3.Database("data.sqlite");
 
 //db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
 //var start =  "2017-01-01T10:18:57.452368+03:00"
-var start =  "2017-09-21T09:12:17.059901+03:00"
+var start =  "2017-06-01T09:12:17.059901+03:00"
 //var end  = formatTime(new Date());
 //var end  = "2017-01-03"
 var p=0; var p2=0;
@@ -59,7 +59,14 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 	//////////tenders//////////////
 		client.request({url: 'https://public.api.openprocurement.org/api/2.3/tenders/'+tender_id})
 		.then(function (data) {
-		var startAmount;var lots;
+		var startAmount;var lots; var items; var unit; var quantity;
+		
+		items = data.getJSON().data.items.length;
+		if(items==1){
+			unit = data.getJSON().data.items[0].unit.name
+			quantity = data.getJSON().data.items[0].quantity
+		}
+		
 		if(data.getJSON().data.lots==undefined){
 			startAmount = data.getJSON().data.value.amount;
 			lots=1;
@@ -85,6 +92,7 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		var awards = data.getJSON().data.awards.length;
 		var documents = data.getJSON().data.documents.length;
 		
+		console.log(unit+" : "+quantity)
 	//////////tenders AND db//////////////	
 	
 db.serialize(function() {
@@ -112,7 +120,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<500){setTimeout(function() {piv ();},10000);}		
+	if (p<1){setTimeout(function() {piv ();},10000);}		
 		else {
 			console.log("stop")
 			
