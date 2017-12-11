@@ -66,6 +66,10 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 			unit = data.getJSON().data.items[0].unit.name
 			quantity = data.getJSON().data.items[0].quantity
 		}
+		else{
+			unit = "";
+			quantity = "";
+		}
 		
 		if(data.getJSON().data.lots==undefined){
 			startAmount = data.getJSON().data.value.amount;
@@ -92,7 +96,7 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		var awards = data.getJSON().data.awards.length;
 		var documents = data.getJSON().data.documents.length;
 		
-		console.log(unit+" : "+quantity)
+		
 	//////////tenders AND db//////////////	
 	
 db.serialize(function() {
