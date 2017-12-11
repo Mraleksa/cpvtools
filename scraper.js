@@ -66,10 +66,7 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 			unit = data.getJSON().data.items[0].unit.name
 			quantity = data.getJSON().data.items[0].quantity
 		}
-		else{
-			unit = "";
-			quantity = "";
-		}
+		
 		
 		if(data.getJSON().data.lots==undefined){
 			startAmount = data.getJSON().data.value.amount;
