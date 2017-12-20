@@ -9,7 +9,7 @@ var db = new sqlite3.Database("data.sqlite");
 
 //db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
 //var start =  "2017-01-01T10:18:57.452368+03:00"
-var start =  "2017-10-31T10:46:40.609512+02:00"
+var start =  "2017-11-15T09:21:38.244110+02:00"
 //var end  = formatTime(new Date());
 //var end  = "2017-01-03"
 var p=0; var p2=0;
@@ -121,7 +121,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<500){setTimeout(function() {piv ();},10000);}		
+	if (p<10){setTimeout(function() {piv ();},10000);}		
 		else {
 			console.log("stop")
 			
